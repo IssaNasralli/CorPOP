@@ -23,8 +23,6 @@ Model Training of CorPOP/
 └── data_atrous.py
 ```
 
-The training script also imports `evaluate.py`. Make sure this module is available in the project environment or add it to the folder if it is not already provided elsewhere.
-
 ## Model Architecture
 
 CorPOP uses a multi-branch architecture to capture spatial information at different scales.
