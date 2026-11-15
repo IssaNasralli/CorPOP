@@ -517,7 +517,7 @@ Population predictions are aggregated over administrative units and compared aga
 
 ## Scripts and Configuration
 
-Training scripts and configuration files are provided in the folder  👉 [**`Model Training of CorPOP/`**](https://github.com/IssaNasralli/CorPOP/tree/main/Model%20training%20of%20CorPOP)\
+Training scripts and configuration files are provided in the folder  👉 [**`Model Training of CorPOP/`**](https://github.com/IssaNasralli/CorPOP/tree/main/Model%20Training%20of%20CorPOP)\
 
 ---
 
