@@ -9,7 +9,7 @@ The model combines a Variational Autoencoder (VAE), an atrous convolutional bran
 
 The main training script is:
 
-- `test_CORAL_dynamic.py`
+- `test_CORAL.py`
 
 Unlike fixed CORAL regularization, the adaptive approach dynamically adjusts the CORAL contribution to the total loss according to the discrepancy between source and target feature distributions.
 
@@ -18,7 +18,7 @@ Unlike fixed CORAL regularization, the adaptive approach dynamically adjusts the
 ```text
 Model Training of CorPOP/
 │
-├── test_CORAL_dynamic.py
+├── test_CORAL.py
 ├── popVAE_full_Gate_Atrous_Gate_CORAL.py
 └── data_atrous.py
 ```
@@ -185,7 +185,7 @@ The training configuration previously provided includes:
 | Random seed | 42 |
 | Optimizer | Adam |
 
-These parameter values should be checked against the current `test_CORAL_dynamic.py` before running experiments.
+These parameter values should be checked against the current `test_CORAL.py` before running experiments.
 
 ## Requirements
 
@@ -206,7 +206,7 @@ Make sure that the required Python modules and input datasets are available.
 Run the main training script from the project directory:
 
 ```bash
-python test_CORAL_dynamic.py
+python test_CORAL.py
 ```
 
 The script loads the source and target data, prepares the training samples, builds the CorPOP model, and performs training with adaptive CORAL regularization.
@@ -241,7 +241,7 @@ The exact output filenames depend on the configuration specified in the training
 
 ## Notes
 
-- `test_CORAL_dynamic.py` is the main training entry point documented in this repository.
+- `test_CORAL.py` is the main training entry point documented in this repository.
 - The implementation uses adaptive rather than fixed CORAL regularization.
 - The target domain is used for unsupervised feature alignment; population labels from the target domain are not required for this alignment.
 - The adaptive coefficient is recalculated according to the current source-target feature discrepancy during training.
