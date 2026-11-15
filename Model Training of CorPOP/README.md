@@ -9,7 +9,7 @@ The model combines a Variational Autoencoder (VAE), an atrous convolutional bran
 
 The main training script is:
 
-- `test_CORAL.py`
+- `test_CORAL_dynamic.py`
 
 Unlike fixed CORAL regularization, the adaptive approach dynamically adjusts the CORAL contribution to the total loss according to the discrepancy between source and target feature distributions.
 
@@ -18,16 +18,18 @@ Unlike fixed CORAL regularization, the adaptive approach dynamically adjusts the
 ```text
 Model Training of CorPOP/
 │
-├── test_CORAL.py
+├── test_CORAL_dynamic.py
 ├── popVAE_full_Gate_Atrous_Gate_CORAL.py
 └── data_atrous.py
 ```
+
+The training script also imports `evaluate.py`. Make sure this module is available in the project environment or add it to the folder if it is not already provided elsewhere.
 
 ## Model Architecture
 
 CorPOP uses a multi-branch architecture to capture spatial information at different scales.
 
-### 1. VAE branch
+### 1. VAE Branch
 
 The VAE branch processes a local spatial patch around each target pixel. It consists of:
 
@@ -36,13 +38,13 @@ The VAE branch processes a local spatial patch around each target pixel. It cons
 - A decoder that reconstructs the input patch.
 - A latent representation used by the population prediction branch.
 
-### 2. Atrous convolution branch
+### 2. Atrous Convolution Branch
 
 The atrous branch processes a larger spatial patch to capture broader geographic context.
 
 It uses parallel dilated convolutions with different dilation rates to extract spatial features at multiple receptive-field scales.
 
-### 3. Feature fusion and prediction
+### 3. Feature Fusion and Prediction
 
 The extracted representations are combined with pixel-level ancillary features. Gating mechanisms are used to modulate the learned representations before fusion.
 
@@ -52,56 +54,76 @@ The resulting feature vector is passed to a prediction head to estimate the popu
 
 To improve cross-domain generalization, the model uses CORAL to align the statistical distributions of source and target features.
 
-Let \(C_s\) and \(C_t\) denote the source and target feature matrices. Their means and covariance matrices are computed as:
+Let \(C_s\) and \(C_t\) denote the source and target feature matrices. Their means and covariance matrices are computed as follows.
 
-\[
+### Source and Target Feature Means
+
+The source feature mean is:
+
+$$
 \mu_s = \frac{1}{N}\sum_{i=1}^{N}c_s^{(i)}
-\]
+$$
 
-\[
+The target feature mean is:
+
+$$
 \mu_t = \frac{1}{N}\sum_{i=1}^{N}c_t^{(i)}
-\]
+$$
 
-\[
+### Source and Target Covariance Matrices
+
+The source covariance matrix is:
+
+$$
 \Sigma_s =
 \frac{1}{N-1}
 (C_s-\mu_s)(C_s-\mu_s)^T
-\]
+$$
 
-\[
+The target covariance matrix is:
+
+$$
 \Sigma_t =
 \frac{1}{N-1}
 (C_t-\mu_t)(C_t-\mu_t)^T
-\]
+$$
+
+### CORAL Loss
 
 The CORAL loss measures the discrepancy between the source and target distributions:
 
-\[
+$$
 L_{\mathrm{CORAL}} =
 \frac{1}{4d^2}
 \|\Sigma_s-\Sigma_t\|_F^2
 +
 \lambda_\mu\|\mu_s-\mu_t\|_2^2
-\]
+$$
 
-where \(d\) is the feature dimension and \(\lambda_\mu\) controls the contribution of the mean discrepancy.
+where:
 
-### Dynamic regularization coefficient
+- \(d\) is the feature dimension.
+- \(\lambda_\mu\) controls the contribution of the mean discrepancy.
+- \(\|\cdot\|_F\) denotes the Frobenius norm.
+
+### Dynamic Regularization Coefficient
 
 Instead of using a constant CORAL weight, the training procedure computes a dynamic coefficient:
 
-\[
+$$
 D_t^2 =
 \|\Sigma_s-\Sigma_t\|_F^2
 +
 \lambda_\mu\|\mu_s-\mu_t\|_2^2
-\]
+$$
 
-\[
+The adaptive CORAL coefficient is defined as:
+
+$$
 \gamma_t =
 \gamma_{\max}
 \frac{D_t^2}{D_t^2+\kappa}
-\]
+$$
 
 where:
 
@@ -115,26 +137,30 @@ As the source-target discrepancy increases, the CORAL contribution becomes stron
 
 The coefficient is bounded:
 
-\[
+$$
 0 \leq \gamma_t < \gamma_{\max}
-\]
+$$
 
 This adaptive mechanism allows the model to adjust the strength of domain alignment throughout training.
 
-### Total loss
+### Total Loss
 
 The total objective combines the population prediction loss, VAE regularization, and adaptive CORAL alignment:
 
-\[
+$$
 L_{\mathrm{total}} =
 \alpha L_{\mathrm{pop}}
 +
 \beta L_{\mathrm{VAE}}
 +
 \gamma_t L_{\mathrm{CORAL}}
-\]
+$$
 
-Here, \(\alpha\) and \(\beta\) control the contributions of population prediction and VAE regularization, while \(\gamma_t\) dynamically controls domain alignment.
+Here:
+
+- \(\alpha\) controls the contribution of population prediction.
+- \(\beta\) controls the contribution of VAE regularization.
+- \(\gamma_t\) dynamically controls domain alignment.
 
 ## Dataset and Experimental Setup
 
@@ -161,7 +187,7 @@ The training configuration previously provided includes:
 | Random seed | 42 |
 | Optimizer | Adam |
 
-These parameter values should be checked against the current `test_CORAL.py` before running experiments.
+These parameter values should be checked against the current `test_CORAL_dynamic.py` before running experiments.
 
 ## Requirements
 
@@ -182,7 +208,7 @@ Make sure that the required Python modules and input datasets are available.
 Run the main training script from the project directory:
 
 ```bash
-python test_CORAL.py
+python test_CORAL_dynamic.py
 ```
 
 The script loads the source and target data, prepares the training samples, builds the CorPOP model, and performs training with adaptive CORAL regularization.
@@ -217,7 +243,7 @@ The exact output filenames depend on the configuration specified in the training
 
 ## Notes
 
-- `test_CORAL.py` is the main training entry point documented in this repository.
+- `test_CORAL_dynamic.py` is the main training entry point documented in this repository.
 - The implementation uses adaptive rather than fixed CORAL regularization.
 - The target domain is used for unsupervised feature alignment; population labels from the target domain are not required for this alignment.
 - The adaptive coefficient is recalculated according to the current source-target feature discrepancy during training.
@@ -229,10 +255,10 @@ The adaptive CORAL formulation and experimental methodology are described in the
 
 The adaptive coefficient follows the formulation:
 
-\[
+$$
 \gamma_t =
 \gamma_{\max}
 \frac{D_t^2}{D_t^2+\kappa}
-\]
+$$
 
 with the initial discrepancy used to determine the sensitivity parameter \(\kappa\).
