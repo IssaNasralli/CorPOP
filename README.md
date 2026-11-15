@@ -362,10 +362,10 @@ Architecture diagram:
 ![ ](coral.png)
 
 
-We present CorPOP, a domain-invariant deep learning framework that integrates unsupervised second-order feature alignment for cross-regional regression. Built on a Variational Autoencoder backbone, CorPOP fuses pixel-level and contextual representations while employing CORAL regularization to align the covariance structure of latent features between source and target domains. Trained on Tunisian data and evaluated on the Île-de-France region, the model achieves superior cross-domain generalization and reduced errors compared with non-adapted baselines. These results demonstrate how second-order domain adaptation can enhance geospatial population estimation and related transfer learning tasks.
+We present CorPOP, a domain-invariant deep learning framework that integrates unsupervised second-order feature alignment for cross-regional regression. Built on popVAT backbone, CorPOP fuses pixel-level and contextual representations while employing CORAL regularization to align the covariance structure of latent features between source and target domains. Trained on Tunisian data and evaluated on the Île-de-France region, the model achieves superior cross-domain generalization and reduced errors compared with non-adapted baselines. These results demonstrate how second-order domain adaptation can enhance geospatial population estimation and related transfer learning tasks.
 
 
-Detailed explanation is available in the folder 👉 [**"Model architecture of CorPOP"**](https://github.com/IssaNasralli/popVAT/tree/main/Model%20architecture%20of%20CorPOP)
+Detailed explanation is available in the folder 👉 [**"Model architecture of popVAT"**](https://github.com/IssaNasralli/popVAT/tree/main/Model%20architecture%20of%20popVAT)
 
 
  
