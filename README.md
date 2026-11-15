@@ -436,98 +436,25 @@ The best performance was achieved with:
 
 Training scripts and configuration files are provided in the folder  👉 [**`Model Training of popVAT/`**](https://github.com/IssaNasralli/popVAT/tree/main/Model%20training%20of%20popVAT)
 
-
-
-
-
----
-
-# 5. Raster Population Prediction Map at the Pixel Level
-### Dependencies
-
-Make sure the following Python packages are installed:
-
-```bash
-tensorflow 2.15.0
-numpy
-pandas
-scikit-learn
-rasterio
-```
-After training the model, the next step consists of generating a full **population prediction raster**.
-
-The inference process scans the ancillary dataset pixel by pixel.  
-For each pixel:
-
-1. A local patch and a larger contextual patch are extracted from the multi-band raster.
-2. These inputs are passed through the trained **popVAT** model.
-3. The model predicts the population value associated with that pixel.
-4. The predicted value is written to the output raster.
-
-This procedure iterates horizontally and vertically over the entire study area until a complete population map is reconstructed.
-
-To ensure robustness for large rasters, the inference pipeline:
-- Processes pixels in batches
-- Saves intermediate predictions
-- Uses a checkpoint mechanism allowing the process to resume if interrupted
-
-The detailed scripts and execution instructions are available in the folder  👉 [**`Model inference of popVAT`**](https://github.com/IssaNasralli/popVAT/tree/main/Model%20inference%20of%20popVAT)
-
-
-
-
-
-# 6. Model evaluation of popVAT
-### Dependencies
-
-Make sure the following Python packages are installed:
-
-```bash
-numpy
-pandas
-scikit-learn
-rasterio
-```
-The popVAT model produces **population predictions at the pixel level (100 m spatial resolution)**.  
-Each pixel in the output raster represents the estimated number of people living within that grid cell.
-
-However, as commonly done in the population-mapping literature, model evaluation cannot rely on pixel-level ground truth because such data rarely exists. Instead, predictions are **aggregated to administrative regions** and compared with official census statistics.
-
-In this work, evaluation is performed using **official population counts provided by the Tunisian National Institute of Statistics (INS)** at the **governorate level**.
-
-The evaluation workflow consists of:
-
-1. Generating the predicted population raster at 100 m resolution.
-2. Aggregating pixel predictions within each administrative region.
-3. Comparing aggregated predictions with census totals.
-4. Computing statistical metrics.
-
-Detailed scripts and execution instructions are provided in  👉 [**`Model evaluation of popVAT/`**](https://github.com/IssaNasralli/popVAT/tree/main/Model%20evaluation%20of%20popVAT)
-
-
-
-
----
-
-# Reproducibility
-
-Steps to reproduce the study:
-
-1. Download datasets or use the provided ones.
-2. Follow preprocessing instructions inside each folder.
-3. Assemble the final dataset.
-4. Train the model using provided scripts.
-5. Run the evaluation scripts.
-
-All intermediate and final datasets are provided whenever possible to ensure reproducibility.
-
 ---
 
 # Citation
 
-If you use this repository, please cite the corresponding publications of **popVAT** and **popVAE**.
+If you use this repository, please cite the corresponding publications of **CorPOP**,  **popVAT** and **popVAE**.
 
 ---
+CorPOP:
+```bash
+@inproceedings{nasralli2026domaine,
+  title={Domain-Invariant Representation Learning via Second-Order Feature Alignment: Application to Geospatial Population Estimation},
+  author={Nasralli, Issa and Masmoudi, Imen and Drira, Hassen},
+  booktitle={},
+  pages={},
+  year={},
+  organization={}
+}
+```
+
 popVAE:
 ```bash
 @inproceedings{nasralli2025fine,
