@@ -280,10 +280,13 @@ This file corresponds to the dataset used for training and evaluation in the stu
 
 # 2.4 Visualizing and Inspecting the Dataset in ArcGIS Pro
 
-The final dataset (`tunisia10.tif`) is a multi-band raster that can be easily explored using ArcGIS Pro.
+The final datasets (`tunisia10.tif`)  and (`france10.tif`) are a multi-band raster that can be easily explored using ArcGIS Pro.
 
 ### Step 1 — Download the dataset
 Download the ready file (`tunisia10.tif`) from the link below and extract it if necessary.  👉 [Download](https://drive.google.com/file/d/12YaLwfOp-IPpgUMciMzb_lOR_eK4aL5B/view?usp=sharing)
+
+Download the ready file (`france10.tif`) from the link below and extract it if necessary.  👉 [Download (https://drive.google.com/file/d/12O0Sm3J4QSD5YlqmrlFKK7yD82jWDZOz/view?usp=sharing)
+
 
 
 ### Step 2 — Open ArcGIS Pro
