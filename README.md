@@ -1,13 +1,12 @@
-# popVAT: Population Mapping using Variational Autoencoder with Transfer Learning
+# CorPOP: Domain-Invariant Representation Learning via Second-Order Feature Alignment: Application to Geospatial Population Estimation
 
 ## 1. Introduction
 
-This repository provides the implementation of **popVAT**, an extension of the **popVAE** framework for high-resolution population mapping.  
-popVAT uses the **same datasets as popVAE**, while the **deep learning model is modified** to improve performance.
+This repository provides the implementation of **CorPOP**.
 
-The location of the study area (**Tunisia**) is illustrated in the following figure:
+The location of the study areas (**Tunisia**) and (**Île-de-France**) is illustrated in the following figure:
 
-<img src="area.png" width="25%">
+<img src="area.png" width="50%">
 
 ---
 
