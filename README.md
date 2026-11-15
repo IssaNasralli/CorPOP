@@ -169,8 +169,11 @@ Outside boundary = 0
 Details are available in the folder 👉 [**`GAUL/`**](https://github.com/IssaNasralli/popVAT/tree/main/GAUL)
 
 
-Files are provided in the folder 👉 [**`Tunisia_Regions/`**](https://github.com/IssaNasralli/popVAT/tree/main/Tunisia_Regions)
+For Tunisia: Files are provided in this repositry 👉 [**`Tunisia_Regions/`**](https://github.com/IssaNasralli/CorPOP/tree/main/Tunisia_Regions)
 24 tif files (24 gouvernorates)
+
+For France: Files are provided in this repositry 👉 [**`France_Regions/`**](https://github.com/IssaNasralli/CorPOP/tree/main/France_Regions)
+8 tif files (8 gouvernorates)
 
 ---
 
