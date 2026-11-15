@@ -285,13 +285,7 @@ The final datasets (`tunisia10.tif`)  and (`france10.tif`) are a multi-band rast
 ### Step 1 — Download the dataset
 Download the ready file (`tunisia10.tif`) from the link below and extract it if necessary.  👉 [Download](https://drive.google.com/file/d/12YaLwfOp-IPpgUMciMzb_lOR_eK4aL5B/view?usp=sharing)
 
-Download the ready file (`tunisia10.tif`) from the link below and extract it if necessary.  👉 [Download](https://drive.google.com/file/d/1T2pAUayDnHEmiLn8inYmh2OkjXFXrXTF/view?usp=sharing)
-
-
-Download the ready file (`france10.tif`) from the link below and extract it if necessary.  👉 [Download]()
-
-Download the ready file (`france10.tif`) from the link below and extract it if necessary.  👉 [Download ()
-
+Download the ready file (`france10.tif`) from the link below and extract it if necessary.  👉 [Download](https://drive.google.com/file/d/1T2pAUayDnHEmiLn8inYmh2OkjXFXrXTF/view?usp=sharing)
 
 
 ### Step 2 — Open ArcGIS Pro
