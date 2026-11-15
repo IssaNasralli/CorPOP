@@ -359,7 +359,7 @@ Toolbox → Spatial Analyst → Raster Processing tools such as:
 
 Architecture diagram:
 
-![ ](CorPOP.png)
+![ ](coral.png)
 
 
 We propose **popVAT** (Population estimation using Variational Autoencoder and Atrous Convolution), an extension of **popVAE** designed for adaptive hierarchical spatial modeling from multisource geospatial data. The framework integrates multi-scale spatial reasoning within a unified architecture by combining a VAE-based contextual encoder with atrous convolution and learnable gating mechanisms.
