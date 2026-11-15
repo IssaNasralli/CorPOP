@@ -36,14 +36,14 @@ Original sources:
 
 Because WorldPop dataset requires downloading **global rasters and extracting Tunisia**, we provide ready-to-use files.
 
-Folder:
+File from google drive:
 
 👉 [**`WorldPop Data/`**](https://drive.google.com/file/d/144qTJMNqwMi6JjsT-KorP9HB4IgxaWe5/view?usp=sharing)
 
-Files:
-ins_population.csv 
+Files uploaded in this repositry:
 
-insee_population.csv 
+- ins_population.csv 
+- insee_population.csv 
 
 Users can either download the original datasets or directly use the provided files.
 
