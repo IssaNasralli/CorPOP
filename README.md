@@ -22,32 +22,27 @@ The dataset consists of **population data** and several **ancillary datasets**.
 
 # 2.1 Population Data
 
-Four population datasets were used:
+Three population datasets were used:
 
 - WorldPop  
-- GPWv4  
-- LandScan  
-- INS (Institut National de la Statistique – Tunisia)
+- INS (Institut national de la statistique – Tunisia)
+- INSEE (L’Institut national de la statistique et des études économiques -France)
 
 Original sources:
 
 - WorldPop: https://hub.worldpop.org/doi/10.5258/soton/wp00536
-- GPWv4: https://www.earthdata.nasa.gov/data/catalog/sedac-ciesin-sedac-gpwv4-popdens-r11-4.11
-- LandScan: https://landscan.ornl.gov/ 
 - INS: https://www.ins.tn/statistiques/111
+- INSEE:https://www.insee.fr/fr/statistiques/5351310
 
-Because some of these datasets require downloading **global rasters and extracting Tunisia**, we provide ready-to-use files.
+Because WorldPop dataset requires downloading **global rasters and extracting Tunisia**, we provide ready-to-use files.
 
 Folder:
 
-👉 [**`Population Data/`**](https://github.com/IssaNasralli/popVAT/tree/main/Population%20Data)
+👉 [**`WorldPop Data/`**](https://drive.google.com/file/d/144qTJMNqwMi6JjsT-KorP9HB4IgxaWe5/view?usp=sharing)
 
 Files:
-
-POP.tif  
-gpwv4.tif  
-landscan.tif  
 ins_population.csv 
+insee_population.csv 
 
 Users can either download the original datasets or directly use the provided files.
 
