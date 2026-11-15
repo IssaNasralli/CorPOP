@@ -371,70 +371,153 @@ Detailed explanation is available in the folder 👉 [**"Model architecture of p
  
 ---
 
+
 # 4. Training
-### Dependencies
+
+## Dependencies
 
 Make sure the following Python packages are installed:
 
 ```bash
-tensorflow 2.15.0
+tensorflow==2.15.0
 numpy
 pandas
 scikit-learn
 rasterio
 ```
+
 Other requirements:
 
-Python ≥ 3.8
+- Python ≥ 3.8
+- GPU recommended for training (NVIDIA Tesla K80 or higher).
+- Sufficient RAM for raster processing (≥32 GB recommended).
 
-GPU recommended for training (NVIDIA Tesla K80 or higher)
+The **CorPOP** framework is implemented using **TensorFlow 2.15.0** and **Keras**, with auxiliary data processing handled by **Scikit-learn**. The model builds upon a Variational Autoencoder (VAE) backbone combined with an atrous convolution branch and incorporates CORAL-based domain adaptation for improved cross-regional generalization.
 
-Sufficient RAM for raster processing (≥32 GB recommended)
+## Dataset
 
-All experiments were conducted on a high-performance computing system running **Ubuntu 22.04 LTS (64-bit)**, equipped with an **AMD Epyc 7443p (24-core × 8) CPU**, **32 GiB of RAM**, and an **NVIDIA Tesla K80 GPU**. The **popVAT** framework was implemented using **TensorFlow 2.15.0** and **Keras**, with auxiliary data processing handled by **Scikit-learn**.
+CorPOP is trained and evaluated using two distinct geographic domains:
 
-### Dataset
+- **Source domain:** Tunisia.
+- **Target domain:** Île-de-France, France.
 
-The model was trained on the raster-based ancillary dataset for **Tunisia**. To balance computational tractability and prevent overfitting, we adopted a heuristic: the number of training samples is roughly ten times the number of trainable parameters. After reduction, the dataset was randomly split into:
+Both domains use the same population ground truth as in [5], namely WorldPop 2020 data (100 m resolution), complemented by census statistics from Tunisia's National Institute of Statistics (INS, 2020, governorate level).
 
-- **50% training**  
-- **10% validation**  
+The ancillary geospatial datasets consist of 10 feature bands, including:
+
+- Land use
+- Building footprints
+- Road networks
+- Points of Interest (POI)
+- Land cover
+- Elevation
+- Slope
+- Nighttime lights
+
+Educational POI data for Île-de-France was collected from the [Open Data Platform for Education, Sports, and Youth](https://data.education.gouv.fr/). Administrative-level validation in Île-de-France relies on [INSEE's 2020 population counts](https://www.insee.fr/fr/statistiques/5351310).
+
+The source-domain dataset (Tunisia) was randomly divided into:
+
+- **50% training**
+- **10% validation**
 - **40% testing**
 
-This ensures that over **87% of test pixels** originate from unseen geographic areas, simulating real-world deployment scenarios.
+The target-domain data is used during training for unsupervised domain adaptation through feature alignment, without requiring target-domain population labels for the CORAL objective.
 
-### Model Optimization
+## Model Architecture
 
-- **Optimizer:** Adam (default learning rate)  
-- **Training epochs:** 100  
-- **Loss function:** Composite of Mean Squared Error (MSE) for population regression, VAE reconstruction, and Kullback–Leibler divergence (following [Kingma & Welling, 2013](https://arxiv.org/abs/1312.6114))  
+CorPOP adopts a dual-branch architecture combining:
 
-This joint objective balances predictive accuracy with spatial regularization, allowing latent representations to maintain coherence across regions.
+- **VAE branch:** Extracts spatial contextual representations from medium-scale patches.
+- **Atrous convolution branch:** Extracts contextual features from larger global patches.
+- **Feature fusion:** Concatenates pixel-level ancillary features, VAE latent representations, and atrous features.
+- **Prediction head:** Estimates population density from the fused feature representation.
 
-### Hyperparameter Tuning
+To improve cross-domain generalization, CorPOP introduces a CORAL-based regularization mechanism that aligns the statistical distributions of source- and target-domain feature representations.
 
-A cross-validation procedure explored:
+## Model Optimization
 
-- **Latent dimension (d):** 10–100 (step 10), 100–1000 (step 100)  
-- **Batch size:** {32, 64, 128, 256, 512, 1024}  
-- **Medium patch size (p):** {9, 11, 13, 15}  
-- **Global patch size (p_g):** {17, 21, 25, 31, 35, 41}  
-- **Loss weights (α, β):** {(2,1), (1,1), (1,2), (0.5,1.5), (1.5,0.5)}  
-- **Gating activations:** sigmoid, tanh  
+The model is optimized using the Adam optimizer with its default learning rate.
 
-### Optimal Configuration
+- **Optimizer:** Adam (default learning rate).
+- **Training epochs:** 100.
+- **Batch size:** 256 samples per domain.
+- **Local patch size (p):** 11.
+- **Global patch size (p_g):** 21.
+- **Population regression loss:** Mean Squared Error (MSE).
+- **VAE reconstruction loss:** Mean Squared Error (MSE).
+- **VAE regularization:** Kullback–Leibler (KL) divergence.
+- **Domain adaptation loss:** CORAL loss, aligning first- and second-order statistics between source and target feature distributions.
 
-The best performance was achieved with:
+The overall training objective combines population regression, VAE regularization, and domain alignment:
 
-- **d = 20**  
-- **Batch size = 1024**  
-- **p = 11, p_g = 21**  
-- **Loss weights (α, β) = (1,1)**  
-- **Sigmoid** activation for gating modules  
+$$
+\mathcal{L} =
+\alpha \mathcal{L}_{pop}
++\beta \mathcal{L}_{VAE}
++\gamma_t\mathcal{L}_{CORAL}
+$$
 
-### Scripts and Configuration
+where $\alpha$ and $\beta$ control the contributions of population prediction and VAE regularization, respectively, while $\gamma_t$ controls the strength of domain alignment.
 
-Training scripts and configuration files are provided in the folder  👉 [**`Model Training of popVAT/`**](https://github.com/IssaNasralli/popVAT/tree/main/Model%20training%20of%20popVAT)
+## Domain Adaptation and Hyperparameter Tuning
+
+Three experimental configurations were investigated:
+
+1. **Baseline model:** Without CORAL alignment.
+2. **Fixed CORAL:** Uses a constant domain adaptation weight ($\gamma$).
+3. **Adaptive CORAL (proposed):** Dynamically adjusts the alignment strength according to the discrepancy between source- and target-domain feature distributions.
+
+### Fixed CORAL Configuration
+
+For the fixed CORAL configuration, the regularization weight was explored over:
+
+- **$\gamma$:** 0.1–1.0 (step 0.05).
+
+The optimal fixed CORAL configuration was obtained with:
+
+- **$\gamma = 0.2$**
+
+### Adaptive CORAL Configuration
+
+For the proposed adaptive CORAL configuration, the adaptive coefficient is defined as:
+
+$$
+\gamma_t = \gamma_{\max}
+\frac{D_t^2}{D_t^2+\kappa}
+$$
+
+where:
+
+- $D_t^2$ represents the current source-target feature discrepancy.
+- $\gamma_{\max}$ controls the maximum alignment strength.
+- $\kappa$ controls the sensitivity of the adaptation mechanism.
+
+The following hyperparameters were investigated:
+
+- **Maximum alignment weight ($\gamma_{\max}$):** 0.1–1.0 (step 0.05).
+- **Sensitivity parameter ($\kappa$):** 0.25$D_0^2$–2.0$D_0^2$ (step 0.25$D_0^2$).
+
+The optimal adaptive CORAL configuration was obtained with:
+
+- **$\gamma_{\max} = 0.65$**
+- **$\kappa = 1.25D_0^2$**
+
+where $D_0^2$ denotes the initial source-target feature discrepancy computed before CORAL alignment.
+
+## Evaluation Metrics
+
+Model performance is evaluated using three standard metrics:
+
+- **Root Mean Squared Error (RMSE)**
+- **Relative Error (RE)**
+- **Coefficient of determination ($R^2$)**
+
+Population predictions are aggregated over administrative units and compared against official census counts from INS (Tunisia) and INSEE (Île-de-France).
+
+## Scripts and Configuration
+
+Training scripts and configuration files are provided in the folder  👉 [**`Model Training of CorPOP/`**](https://github.com/IssaNasralli/CorPOP/tree/main/Model%20training%20of%20CorPOP)\
 
 ---
 
